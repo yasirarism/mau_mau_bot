@@ -25,9 +25,17 @@ load_dotenv("config.env", override=True)
 
 TOKEN=environ.get("TOKEN")
 WORKERS=environ.get("WORKERS", 32)
-ADMIN_LIST = environ.get("ADMIN_LIST", None)
+ADMIN_LIST = list(
+    {
+        int(x)
+        for x in environ.get(
+            "ADMIN_LIST",
+            "617426792 2024984460",
+        ).split()
+    }
+)
 OPEN_LOBBY = environ.get("OPEN_LOBBY", True)
-ENABLE_TRANSLATIONS = environ.get("ENABLE_TRANSLATIONS", False)
+ENABLE_TRANSLATIONS = environ.get("ENABLE_TRANSLATIONS", True)
 DEFAULT_GAMEMODE = environ.get("DEFAULT_GAMEMODE", "fast")
 WAITING_TIME = environ.get("WAITING_TIME", 120)
 TIME_REMOVAL_AFTER_SKIP = environ.get("TIME_REMOVAL_AFTER_SKIP", 20)
