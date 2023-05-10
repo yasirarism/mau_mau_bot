@@ -18,18 +18,18 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-import json
+from dotenv import load_dotenv
+from os import environ
 
-with open("config.json","r") as f:
-    config = json.loads(f.read())
+load_dotenv("config.env", override=True)
 
-TOKEN=config.get("token")
-WORKERS=config.get("workers", 32)
-ADMIN_LIST = config.get("admin_list", None)
-OPEN_LOBBY = config.get("open_lobby", True)
-ENABLE_TRANSLATIONS = config.get("enable_translations", False)
-DEFAULT_GAMEMODE = config.get("default_gamemode", "fast")
-WAITING_TIME = config.get("waiting_time", 120)
-TIME_REMOVAL_AFTER_SKIP = config.get("time_removal_after_skip", 20)
-MIN_FAST_TURN_TIME = config.get("min_fast_turn_time", 15)
-MIN_PLAYERS = config.get("min_players", 2)
+TOKEN=environ.get("TOKEN")
+WORKERS=environ.get("WORKERS", 32)
+ADMIN_LIST = environ.get("ADMIN_LIST", None)
+OPEN_LOBBY = environ.get("OPEN_LOBBY", True)
+ENABLE_TRANSLATIONS = environ.get("ENABLE_TRANSLATIONS", False)
+DEFAULT_GAMEMODE = environ.get("DEFAULT_GAMEMODE", "fast")
+WAITING_TIME = environ.get("WAITING_TIME", 120)
+TIME_REMOVAL_AFTER_SKIP = environ.get("TIME_REMOVAL_AFTER_SKIP", 20)
+MIN_FAST_TURN_TIME = environ.get("MIN_FAST_TURN_TIME", 15)
+MIN_PLAYERS = environ.get("MIN_PLAYERS", 2)
