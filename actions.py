@@ -37,9 +37,7 @@ def do_skip(bot, player, job_queue=None):
     if skipped_player.waiting_time > 0:
         skipped_player.anti_cheat += 1
         skipped_player.waiting_time -= TIME_REMOVAL_AFTER_SKIP
-        if (skipped_player.waiting_time < 0):
-            skipped_player.waiting_time = 0
-
+        skipped_player.waiting_time = max(skipped_player.waiting_time, 0)
         try:
             skipped_player.draw()
         except DeckEmptyError:
@@ -188,9 +186,7 @@ def start_player_countdown(bot, game, job_queue):
     player = game.current_player
     time = player.waiting_time
 
-    if time < MIN_FAST_TURN_TIME:
-        time = MIN_FAST_TURN_TIME
-
+    time = max(time, MIN_FAST_TURN_TIME)
     if game.mode == 'fast':
         if game.job:
             try:

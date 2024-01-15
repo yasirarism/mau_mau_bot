@@ -45,7 +45,7 @@ def display_name(user):
     """ Get the current players name including their username, if possible """
     user_name = user.first_name
     if user.username:
-        user_name += ' (@' + user.username + ')'
+        user_name += f' (@{user.username})'
     return user_name
 
 
@@ -105,7 +105,7 @@ def answer_async(bot, *args, **kwargs):
 
 
 def game_is_running(game):
-    return game in gm.chatid_games.get(game.chat.id, list())
+    return game in gm.chatid_games.get(game.chat.id, [])
 
 
 def user_is_creator(user, game):

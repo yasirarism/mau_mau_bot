@@ -43,11 +43,11 @@ class GameManager(object):
         """
         chat_id = chat.id
 
-        self.logger.debug("Creating new game in chat " + str(chat_id))
+        self.logger.debug(f"Creating new game in chat {str(chat_id)}")
         game = Game(chat)
 
         if chat_id not in self.chatid_games:
-            self.chatid_games[chat_id] = list()
+            self.chatid_games[chat_id] = []
 
         # remove old games
         for g in list(self.chatid_games[chat_id]):
@@ -59,7 +59,7 @@ class GameManager(object):
 
     def join_game(self, user, chat):
         """ Create a player from the Telegram user and add it to the game """
-        self.logger.info("Joining game with id " + str(chat.id))
+        self.logger.info(f"Joining game with id {str(chat.id)}")
 
         try:
             game = self.chatid_games[chat.id][-1]
@@ -70,7 +70,7 @@ class GameManager(object):
             raise LobbyClosedError()
 
         if user.id not in self.userid_players:
-            self.userid_players[user.id] = list()
+            self.userid_players[user.id] = []
 
         players = self.userid_players[user.id]
 
@@ -88,7 +88,7 @@ class GameManager(object):
             self.end_game(chat, user)
 
             if user.id not in self.userid_players:
-                self.userid_players[user.id] = list()
+                self.userid_players[user.id] = []
 
             players = self.userid_players[user.id]
 
@@ -103,7 +103,7 @@ class GameManager(object):
         """ Remove a player from its current game """
 
         player = self.player_for_user_in_chat(user, chat)
-        players = self.userid_players.get(user.id, list())
+        players = self.userid_players.get(user.id, [])
 
         if not player:
             games = self.chatid_games[chat.id]
@@ -142,7 +142,7 @@ class GameManager(object):
         End a game
         """
 
-        self.logger.info("Game in chat " + str(chat.id) + " ended")
+        self.logger.info(f"Game in chat {str(chat.id)} ended")
 
         # Find the correct game instance to end
         player = self.player_for_user_in_chat(user, chat)
@@ -154,8 +154,7 @@ class GameManager(object):
 
         # Clear game
         for player_in_game in game.players:
-            this_users_players = \
-                self.userid_players.get(player_in_game.user.id, list())
+            this_users_players = self.userid_players.get(player_in_game.user.id, [])
 
             try:
                 this_users_players.remove(player_in_game)
@@ -183,8 +182,7 @@ class GameManager(object):
             del self.chatid_games[chat.id]
 
     def player_for_user_in_chat(self, user, chat):
-        players = self.userid_players.get(user.id, list())
-        for player in players:
-            if player.game.chat.id == chat.id:
-                return player
-        return None
+        players = self.userid_players.get(user.id, [])
+        return next(
+            (player for player in players if player.game.chat.id == chat.id), None
+        )

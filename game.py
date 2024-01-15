@@ -51,7 +51,7 @@ class Game(object):
     @property
     def players(self):
         """Returns a list of all players in this game"""
-        players = list()
+        players = []
         if not self.current_player:
             return players
 
@@ -64,7 +64,7 @@ class Game(object):
         return players
 
     def start(self):
-        if self.mode == None or self.mode != "wild":
+        if self.mode is None or self.mode != "wild":
             self.deck._fill_classic_()
         else:
             self.deck._fill_wild_()
@@ -110,7 +110,7 @@ class Game(object):
         self.deck.dismiss(self.last_card)
         self.last_card = card
 
-        self.logger.info("Playing card " + repr(card))
+        self.logger.info(f"Playing card {repr(card)}")
         if card.value == c.SKIP:
             self.turn()
         elif card.special == c.DRAW_FOUR:

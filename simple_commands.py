@@ -116,15 +116,12 @@ def stats(update: Update, context: CallbackContext):
                    text=_("You did not enable statistics. Use /settings in "
                           "a private chat with the bot to enable them."))
     else:
-        stats_text = list()
-
         n = us.games_played
-        stats_text.append(
-            _("{number} game played",
-              "{number} games played",
-              n).format(number=n)
-        )
-
+        stats_text = [
+            _("{number} game played", "{number} games played", n).format(
+                number=n
+            )
+        ]
         n = us.first_places
         m = round((us.first_places / us.games_played) * 100) if us.games_played else 0
         stats_text.append(

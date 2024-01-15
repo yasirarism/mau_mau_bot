@@ -43,34 +43,24 @@ class _Underscore(object):
             in available_locales.keys()
             if locale != 'en_US'  # No translation file for en_US
         }
-        self.locale_stack = list()
+        self.locale_stack = []
 
     def push(self, locale):
         self.locale_stack.append(locale)
 
     def pop(self):
-        if self.locale_stack:
-            return self.locale_stack.pop()
-        else:
-            return None
+        return self.locale_stack.pop() if self.locale_stack else None
 
     @property
     def code(self):
-        if self.locale_stack:
-            return self.locale_stack[-1]
-        else:
-            return None
+        return self.locale_stack[-1] if self.locale_stack else None
 
     def __call__(self, singular, plural=None, n=1, locale=None):
         if not locale:
             locale = self.locale_stack[-1]
 
         if locale not in self.translators.keys():
-            if n is 1:
-                return singular
-            else:
-                return plural
-
+            return singular if n is 1 else plural
         translator = self.translators[locale]
 
         if plural is None:
@@ -83,9 +73,9 @@ _ = _Underscore()
 
 def __(singular, plural=None, n=1, multi=False):
     """Translates text into all locales on the stack"""
-    translations = list()
+    translations = []
 
-    if not multi and len(set(_.locale_stack)) >= 1:
+    if not multi and set(_.locale_stack):
         translations.append(_(singular, plural, n, 'en_US'))
 
     else:
@@ -124,17 +114,13 @@ def game_locales(func):
     def wrapped(update, context, *pargs, **kwargs):
         user, chat = _user_chat_from_update(update)
         player = gm.player_for_user_in_chat(user, chat)
-        locales = list()
+        locales = []
 
         if player:
             for player in player.game.players:
                 us = UserSetting.get(id=player.user.id)
 
-                if us and us.lang != 'en':
-                    loc = us.lang
-                else:
-                    loc = 'en_US'
-
+                loc = us.lang if us and us.lang != 'en' else 'en_US'
                 if loc in locales:
                     continue
 
@@ -147,6 +133,7 @@ def game_locales(func):
             _.pop()
 
         return result
+
     return wrapped
 
 

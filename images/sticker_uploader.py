@@ -77,30 +77,23 @@ async def get_sticker_set():
     else:
         raise Exception(f'Could not find sticker set "{sticker_config["pack_name"]}"')
 
-    sticker_set = await client(
+    return await client(
         GetStickerSetRequest(
-            InputStickerSetID(id=sticker_set_ref.id, access_hash=sticker_set_ref.access_hash),
+            InputStickerSetID(
+                id=sticker_set_ref.id, access_hash=sticker_set_ref.access_hash
+            ),
             hash=0,
         )
     )
-    return sticker_set
 
 
 async def get_sticker_ids(sticker_set):
     """
     Get the sticker file IDs of the stickers in the given sticker set, mapped to their sticker ID.
     """
-    sticker_ids = []
-
-    for special in SPECIALS:
-        sticker_ids.append(special)
-
+    sticker_ids = list(SPECIALS)
     for color in COLORS:
-        for number in NUMBERS:
-            sticker_ids.append(
-                f"{color}_{number}",
-            )
-
+        sticker_ids.extend(f"{color}_{number}" for number in NUMBERS)
     stickers = {}
 
     for sticker_id, document in zip(sticker_ids, sticker_set.documents):

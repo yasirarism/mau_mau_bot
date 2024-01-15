@@ -84,14 +84,14 @@ def kb_select(update: Update, context: CallbackContext):
 
 @user_locale
 def locale_select(update: Update, context: CallbackContext):
-    chat = update.message.chat
-    user = update.message.from_user
     option = context.match[1]
 
     if option in available_locales:
+        user = update.message.from_user
         us = UserSetting.get(id=user.id)
         us.lang = option
         _.push(option)
+        chat = update.message.chat
         send_async(context.bot, chat.id, text=_("Set locale!"))
         _.pop()
 
